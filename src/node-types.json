@@ -1132,6 +1132,10 @@
         "required": true,
         "types": [
           {
+            "type": "for_each_destructure",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           }
@@ -1177,6 +1181,26 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "for_each_destructure",
+    "named": true,
+    "fields": {
+      "binding": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "wildcard",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {

@@ -33,6 +33,7 @@
 (match_expression binding: (identifier) @variable)
 (pattern_binding name: (identifier) @variable)
 (for_each_clause element: (identifier) @variable)
+(for_each_destructure binding: (identifier) @variable)
 (for_each_clause index: (identifier) @variable)
 
 ; Types and members

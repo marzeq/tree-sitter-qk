@@ -39,6 +39,7 @@ module.exports = grammar({
     [$.import_spec],
     [$.for_each_clause, $.expression],
     [$.for_each_clause, $.expression, $.type_identifier],
+    [$.for_each_destructure, $.expression],
     [$.for_statement, $.expression],
     [$.sequence_literal, $.slice_type],
     [$.sequence_literal, $.array_type],
@@ -293,13 +294,24 @@ module.exports = grammar({
     ),
 
     for_each_clause: $ => seq(
-      field('element', $.identifier),
-      optional(seq('.', '&', optional('mut'))),
+      choice(
+        seq(
+          field('element', $.identifier),
+          optional(seq('.', '&', optional('mut'))),
+        ),
+        field('element', $.for_each_destructure),
+      ),
       optional(seq(',', field('index', $.identifier))),
       'in',
       field('iterable', $.expression),
       optional(seq('..', optional('='), field('end', $.expression))),
       repeat($.iteration_attribute),
+    ),
+
+    for_each_destructure: $ => seq(
+      '(',
+      commaSep1(field('binding', choice(alias('_', $.wildcard), $.identifier))),
+      ')',
     ),
 
     for_clause: $ => prec.left(seq(
