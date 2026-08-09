@@ -361,6 +361,7 @@ module.exports = grammar({
       $.block,
       $.if_expression,
       $.match_expression,
+      $.lambda_expression,
       $.struct_literal,
       $.sequence_literal,
       $.builtin_expression,
@@ -380,6 +381,23 @@ module.exports = grammar({
     ),
 
     parenthesized_expression: $ => seq('(', $.expression, ')'),
+
+    lambda_expression: $ => prec.right(seq(
+      field('parameters', $.lambda_parameter_list),
+      '=>',
+      field('body', $.expression),
+    )),
+
+    lambda_parameter_list: $ => seq(
+      '|',
+      optional(seq(commaSep1($.lambda_parameter), optional(','))),
+      '|',
+    ),
+
+    lambda_parameter: $ => seq(
+      field('name', $.identifier),
+      optional(seq(':', optional('...'), field('type', $.type))),
+    ),
 
     unary_expression: $ => prec.right(PREC.UNARY, seq(
       field('operator', choice('!', '-', '~')),
