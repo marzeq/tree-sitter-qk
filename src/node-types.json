@@ -1710,16 +1710,6 @@
     "type": "lambda_parameter",
     "named": true,
     "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      },
       "type": {
         "multiple": false,
         "required": false,
@@ -1730,6 +1720,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "lambda_parameter_name",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1745,6 +1745,22 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "lambda_parameter_name",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {

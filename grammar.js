@@ -394,10 +394,12 @@ module.exports = grammar({
       '|',
     ),
 
-    lambda_parameter: $ => seq(
-      field('name', $.identifier),
+    lambda_parameter: $ => prec.right(seq(
+      commaSep1($.lambda_parameter_name),
       optional(seq(':', optional('...'), field('type', $.type))),
-    ),
+    )),
+
+    lambda_parameter_name: $ => field('name', $.identifier),
 
     unary_expression: $ => prec.right(PREC.UNARY, seq(
       field('operator', choice('!', '-', '~')),
