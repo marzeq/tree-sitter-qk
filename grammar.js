@@ -248,10 +248,21 @@ module.exports = grammar({
       field('subject', $.expression),
       optional(seq('as', field('binding', $.identifier))),
       '{',
-      commaSep1($.match_arm),
-      optional(','),
+      repeat(choice(
+        alias($._block_match_arm, $.match_arm),
+        seq($.match_arm, ','),
+      )),
+      optional($.match_arm),
       '}',
     ),
+
+    _block_match_arm: $ => prec(1, seq(
+      field('pattern', $.match_pattern),
+      optional(seq('if', field('guard', $.expression))),
+      '=>',
+      field('body', $.block),
+      optional(','),
+    )),
 
     match_arm: $ => seq(
       field('pattern', $.match_pattern),
