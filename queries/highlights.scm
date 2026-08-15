@@ -22,7 +22,8 @@
 (import_spec path: (module_path) @module)
 (import_spec alias: (identifier) @module)
 (type_definition name: (type_identifier) @type.definition)
-(generic_parameter name: (type_identifier) @type.parameter)
+(type_parameter name: (type_identifier) @type.parameter)
+(captured_type name: (type_identifier) @type.parameter)
 (function_name function: (identifier) @function)
 (function_name method: (identifier) @function.method)
 (function_name owner: (identifier) @type)
@@ -55,12 +56,9 @@
 (call_expression function: (identifier) @function.call)
 (call_expression
   function: (field_expression field: (identifier) @function.method.call))
-(generic_call_expression (identifier) @function.call)
-(generic_call_expression
-  (field_expression field: (identifier) @function.method.call))
-(generic_field_expression field: (identifier) @property)
 (builtin_name) @function.builtin
 (attribute_name) @attribute
+(link_kind) @keyword
 (assembly_keyword) @keyword
 
 ; Language words
@@ -70,8 +68,9 @@
   "pub"
   "module"
   "import"
-  "comptime"
 ] @keyword
+
+"$" @keyword.modifier
 
 [
   "type"
@@ -152,12 +151,8 @@
   "}"
 ] @punctuation.bracket
 
-(generic_parameters
-  ["<" ">"] @punctuation.bracket
-  (#set! priority 105))
-
 (type_arguments
-  ["<" ">"] @punctuation.bracket
+  ["(" ")"] @punctuation.bracket
   (#set! priority 105))
 
 [

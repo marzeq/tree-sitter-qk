@@ -1,6 +1,9 @@
 [
   (block)
   (compile_time_block)
+  (when_expression_block)
+  (when_type_block)
+  (link_block)
   (struct_literal)
   (sequence_literal)
   (struct_type)
@@ -12,7 +15,6 @@
   (import_declaration)
   (parameter_list)
   (argument_list)
-  (generic_parameters)
   (type_arguments)
   (attribute)
   (return_type)
