@@ -4,7 +4,7 @@ compile-time type parameters and applications
 
 module sample
 let Box($T: type) = type struct { value: T }
-let Size($T: type) = @sizeof(T)
+let Size($T: type) = sizeof(T)
 let identity($T: type, value: T): T = value
 let (Box($T)).get(self): T = self.value
 let value = Box(i32).{ value=identity(i32, 4) }
@@ -98,16 +98,16 @@ let value = Box(i32).{ value=identity(i32, 4) }
               (integer_literal))))))))
 
 ==================
-when in declarations statements expressions and types
+$if in declarations statements expressions and types
 ==================
 
 module sample
-when OS == .Linux { let selected: i32 = 1 } else { let selected: i32 = 2 }
-let Integer = type when PointerBits == 64 { i64 } else { i32 }
-let value = when true { 1 } else { 2 }
+$if OS == .Linux { let selected: i32 = 1 } else { let selected: i32 = 2 }
+let Integer = type $if PointerBits == 64 { i64 } else { i32 }
+let value = $if true { 1 } else { 2 }
 let choose(): i32 {
-  when true { return value } else { return 0 }
-  @compiler_assert(value == 1, "selected value")
+  $if true { return value } else { return 0 }
+  compiler_assert(value == 1, "selected value")
 }
 
 ---
@@ -198,9 +198,9 @@ conditional link collection
 ==================
 
 module sample @link(
-  when OS == .Windows { system "kernel32", }
-  else when OS == .MacOS { framework "CoreFoundation", }
-  else { @compiler_error("unsupported target") }
+  $if OS == .Windows { system "kernel32", }
+  else if OS == .MacOS { framework "CoreFoundation", }
+  else { compiler_error("unsupported target") }
 )
 
 ---

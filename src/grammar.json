@@ -2280,7 +2280,7 @@
         "members": [
           {
             "type": "STRING",
-            "value": "when"
+            "value": "$if"
           },
           {
             "type": "FIELD",
@@ -2309,7 +2309,7 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "when"
+                  "value": "if"
                 },
                 {
                   "type": "FIELD",
@@ -2399,8 +2399,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "@"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "$"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "ALIAS",
@@ -2429,8 +2437,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "@"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "$"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "ALIAS",
@@ -2724,7 +2740,7 @@
         "members": [
           {
             "type": "STRING",
-            "value": "when"
+            "value": "$if"
           },
           {
             "type": "FIELD",
@@ -2753,7 +2769,7 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "when"
+                  "value": "if"
                 },
                 {
                   "type": "FIELD",
@@ -2876,6 +2892,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "compile_time_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "lambda_expression"
         },
         {
@@ -2952,6 +2972,23 @@
           "value": ")"
         }
       ]
+    },
+    "compile_time_expression": {
+      "type": "PREC",
+      "value": 10,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "$"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        ]
+      }
     },
     "lambda_expression": {
       "type": "PREC_RIGHT",
@@ -3885,7 +3922,7 @@
         "members": [
           {
             "type": "STRING",
-            "value": "when"
+            "value": "$if"
           },
           {
             "type": "FIELD",
@@ -3914,7 +3951,7 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "when"
+                  "value": "if"
                 },
                 {
                   "type": "FIELD",
@@ -4306,10 +4343,6 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@"
-            },
-            {
               "type": "FIELD",
               "name": "name",
               "content": {
@@ -4348,10 +4381,6 @@
         {
           "type": "SEQ",
           "members": [
-            {
-              "type": "STRING",
-              "value": "@"
-            },
             {
               "type": "FIELD",
               "name": "name",
@@ -4401,10 +4430,6 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@"
-            },
-            {
               "type": "FIELD",
               "name": "name",
               "content": {
@@ -4442,10 +4467,6 @@
         {
           "type": "SEQ",
           "members": [
-            {
-              "type": "STRING",
-              "value": "@"
-            },
             {
               "type": "FIELD",
               "name": "name",
@@ -4848,7 +4869,7 @@
         "members": [
           {
             "type": "STRING",
-            "value": "when"
+            "value": "$if"
           },
           {
             "type": "FIELD",
@@ -4877,7 +4898,7 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "when"
+                  "value": "if"
                 },
                 {
                   "type": "FIELD",
@@ -6016,14 +6037,10 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "@"
-        },
-        {
           "type": "ALIAS",
           "content": {
             "type": "STRING",
-            "value": "reprof"
+            "value": "repr"
           },
           "named": true,
           "value": "builtin_name"

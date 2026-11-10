@@ -88,7 +88,7 @@
 [
   "if"
   "else"
-  "when"
+  "$if"
   "match"
 ] @keyword.conditional
 

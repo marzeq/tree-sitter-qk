@@ -345,10 +345,10 @@ module.exports = grammar({
     iteration_attribute: $ => seq('@', alias('reversed', $.attribute_name)),
 
     compile_time_when: $ => prec.right(seq(
-      'when',
+      '$if',
       field('condition', $.expression),
       field('consequence', $.compile_time_block),
-      repeat(seq('else', 'when', field('condition', $.expression), field('consequence', $.compile_time_block))),
+      repeat(seq('else', 'if', field('condition', $.expression), field('consequence', $.compile_time_block))),
       optional(seq('else', field('alternative', $.compile_time_block))),
     )),
 
@@ -359,11 +359,11 @@ module.exports = grammar({
     ),
 
     compiler_error_directive: $ => seq(
-      '@', alias('compiler_error', $.builtin_name), '(', $.string_literal, ')',
+      optional('$'), alias('compiler_error', $.builtin_name), '(', $.string_literal, ')',
     ),
 
     compiler_assert_directive: $ => seq(
-      '@', alias('compiler_assert', $.builtin_name),
+      optional('$'), alias('compiler_assert', $.builtin_name),
       '(', field('condition', $.expression), ',', field('message', $.string_literal), ')',
     ),
 
@@ -397,8 +397,8 @@ module.exports = grammar({
     ),
 
     link_when: $ => prec.right(seq(
-      'when', field('condition', $.expression), field('consequence', $.link_block),
-      repeat(seq('else', 'when', field('condition', $.expression), field('consequence', $.link_block))),
+      '$if', field('condition', $.expression), field('consequence', $.link_block),
+      repeat(seq('else', 'if', field('condition', $.expression), field('consequence', $.link_block))),
       optional(seq('else', field('alternative', $.link_block))),
     )),
 
@@ -413,6 +413,7 @@ module.exports = grammar({
       $.if_expression,
       $.match_expression,
       $.when_expression,
+      $.compile_time_expression,
       $.lambda_expression,
       $.struct_literal,
       $.sequence_literal,
@@ -431,6 +432,8 @@ module.exports = grammar({
     ),
 
     parenthesized_expression: $ => seq('(', $.expression, ')'),
+
+    compile_time_expression: $ => prec(PREC.UNARY, seq('$', $.expression)),
 
     lambda_expression: $ => prec.right(seq(
       field('parameters', $.lambda_parameter_list),
@@ -511,8 +514,8 @@ module.exports = grammar({
     enum_literal: $ => seq('.', field('variant', $.identifier)),
 
     when_expression: $ => prec.right(seq(
-      'when', field('condition', $.expression), field('consequence', $.when_expression_block),
-      repeat(seq('else', 'when', field('condition', $.expression), field('consequence', $.when_expression_block))),
+      '$if', field('condition', $.expression), field('consequence', $.when_expression_block),
+      repeat(seq('else', 'if', field('condition', $.expression), field('consequence', $.when_expression_block))),
       optional(seq('else', field('alternative', $.when_expression_block))),
     )),
 
@@ -547,10 +550,10 @@ module.exports = grammar({
     ),
 
     builtin_expression: $ => choice(
-      seq('@', field('name', alias(choice('len', 'repr'), $.builtin_name)), '(', $.expression, ')'),
-      seq('@', field('name', alias(choice('sizeof', 'alignof'), $.builtin_name)), '(', choice($.type, $.expression), ')'),
-      seq('@', field('name', alias('offsetof', $.builtin_name)), '(', $.type, ',', $.identifier, ')'),
-      seq('@', field('name', alias('embed', $.builtin_name)), '(', $.string_literal, ')'),
+      seq(field('name', alias(choice('len', 'repr'), $.builtin_name)), '(', $.expression, ')'),
+      seq(field('name', alias(choice('sizeof', 'alignof'), $.builtin_name)), '(', choice($.type, $.expression), ')'),
+      seq(field('name', alias('offsetof', $.builtin_name)), '(', $.type, ',', $.identifier, ')'),
+      seq(field('name', alias('embed', $.builtin_name)), '(', $.string_literal, ')'),
     ),
 
     inline_assembly_expression: $ => seq(
@@ -596,8 +599,8 @@ module.exports = grammar({
     type_arguments: $ => seq('(', commaSep1($.type), optional(','), ')'),
 
     when_type: $ => prec.right(seq(
-      'when', field('condition', $.expression), field('consequence', $.when_type_block),
-      repeat(seq('else', 'when', field('condition', $.expression), field('consequence', $.when_type_block))),
+      '$if', field('condition', $.expression), field('consequence', $.when_type_block),
+      repeat(seq('else', 'if', field('condition', $.expression), field('consequence', $.when_type_block))),
       optional(seq('else', field('alternative', $.when_type_block))),
     )),
 
@@ -674,7 +677,7 @@ module.exports = grammar({
     trait_parameter: $ => seq(field('name', $.identifier), ':', field('type', $.type)),
 
     opaque_type: _ => 'opaque',
-    representation_type: $ => seq('@', alias('reprof', $.builtin_name), '(', $.type, ')'),
+    representation_type: $ => seq(alias('repr', $.builtin_name), '(', $.type, ')'),
 
     literal: $ => choice(
       $.integer_literal,
