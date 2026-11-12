@@ -11,6 +11,7 @@
   (flags_type)
   (union_type)
   (trait_type)
+  (distinct_type)
   (match_expression)
   (import_declaration)
   (parameter_list)

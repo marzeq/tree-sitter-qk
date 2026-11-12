@@ -21,12 +21,17 @@
 (module_declaration name: (module_path) @module)
 (import_spec path: (module_path) @module)
 (import_spec alias: (identifier) @module)
-(type_definition name: (type_identifier) @type.definition)
+(binding_declaration name: (identifier) @type.definition value: [(struct_type) (enum_type) (flags_type) (union_type) (trait_type) (distinct_type) (opaque_type)])
+(function_definition name: (function_name function: (identifier) @type.definition) body: [(struct_type) (enum_type) (flags_type) (union_type) (trait_type) (distinct_type)])
 (type_parameter name: (type_identifier) @type.parameter)
 (captured_type name: (type_identifier) @type.parameter)
 (function_name function: (identifier) @function)
 (function_name method: (identifier) @function.method)
-(function_name owner: (identifier) @type)
+(struct_type (function_definition name: (function_name function: (identifier) @function.method)))
+(enum_type (function_definition name: (function_name function: (identifier) @function.method)))
+(flags_type (function_definition name: (function_name function: (identifier) @function.method)))
+(union_type (function_definition name: (function_name function: (identifier) @function.method)))
+(distinct_type (function_definition name: (function_name function: (identifier) @function.method)))
 (binding_declaration name: (identifier) @variable)
 (multi_binding_declaration name: (identifier) @variable)
 (parameter_name name: (identifier) @variable.parameter)
@@ -74,16 +79,17 @@
 
 [
   "type"
-  "alias"
   "struct"
   "union"
   "enum"
   "trait"
+  "distinct"
   "dyn"
 ] @keyword.type
 
 (type_keyword) @keyword.type
 (opaque_type) @keyword.type
+(metatype) @keyword.type
 
 [
   "if"

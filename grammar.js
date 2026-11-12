@@ -31,8 +31,6 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.binding_declaration, $.type_identifier],
-    [$.function_name, $.type_identifier],
     [$.expression, $.type_identifier],
     [$.import_spec],
     [$.for_each_clause, $.expression],
@@ -44,7 +42,6 @@ module.exports = grammar({
     [$.statement, $.when_expression_block],
     [$.expression_statement, $.when_expression_block],
     [$.named_type],
-    [$.when_expression_block, $.when_type_block],
     [$.expression, $.struct_literal],
   ],
 
@@ -55,7 +52,6 @@ module.exports = grammar({
       $.module_declaration,
       $.import_declaration,
       $.function_definition,
-      $.type_definition,
       $.binding_declaration,
       $.multi_binding_declaration,
       $.compile_time_when,
@@ -105,10 +101,7 @@ module.exports = grammar({
     function_name: $ => choice(
       field('function', $.identifier),
       seq(
-        field('owner', choice(
-          $.identifier,
-          seq('(', $.type, ')'),
-        )),
+        field('owner', seq('(', $.type, ')')),
         '.',
         field('method', $.identifier),
       ),
@@ -137,15 +130,7 @@ module.exports = grammar({
       '$',
       field('name', $.type_identifier),
       ':',
-      'type',
-      optional(seq('(', field('constraint', $.type), ')')),
-    ),
-
-    type_parameter_list: $ => seq(
-      '(',
-      commaSep1($.type_parameter),
-      optional(','),
-      ')',
+      field('type', $.type),
     ),
 
     parameter: $ => seq(
@@ -169,22 +154,10 @@ module.exports = grammar({
       seq('(', commaSep1($.type), ')'),
     ),
 
-    type_definition: $ => seq(
-      optional('pub'),
-      'let',
-      field('name', $.type_identifier),
-      optional(field('type_parameters', $.type_parameter_list)),
-      '=',
-      'type',
-      optional('alias'),
-      field('value', $.type),
-    ),
-
     binding_declaration: $ => prec.right(seq(
       optional('pub'),
       'let',
       optional('mut'),
-      optional(field('compile_time', '$')),
       field('name', $.identifier),
       optional(seq(':', field('type', $.type))),
       choice(
@@ -211,7 +184,6 @@ module.exports = grammar({
 
     statement: $ => choice(
       $.function_definition,
-      $.type_definition,
       $.binding_declaration,
       $.multi_binding_declaration,
       $.assignment_statement,
@@ -417,6 +389,18 @@ module.exports = grammar({
       $.lambda_expression,
       $.struct_literal,
       $.sequence_literal,
+      $.struct_type,
+      $.enum_type,
+      $.flags_type,
+      $.union_type,
+      $.trait_type,
+      $.distinct_type,
+      $.opaque_type,
+      $.pointer_type,
+      $.slice_type,
+      $.array_type,
+      $.function_type,
+      $.metatype,
       $.builtin_expression,
       $.inline_assembly_expression,
       $.unary_expression,
@@ -551,7 +535,7 @@ module.exports = grammar({
 
     builtin_expression: $ => choice(
       seq(field('name', alias(choice('len', 'repr'), $.builtin_name)), '(', $.expression, ')'),
-      seq(field('name', alias(choice('sizeof', 'alignof'), $.builtin_name)), '(', choice($.type, $.expression), ')'),
+      seq(field('name', alias(choice('sizeof', 'alignof'), $.builtin_name)), '(', $.expression, ')'),
       seq(field('name', alias('offsetof', $.builtin_name)), '(', $.type, ',', $.identifier, ')'),
       seq(field('name', alias('embed', $.builtin_name)), '(', $.string_literal, ')'),
     ),
@@ -587,14 +571,16 @@ module.exports = grammar({
       $.trait_type,
       $.opaque_type,
       $.representation_type,
+      $.distinct_type,
+      $.metatype,
       $.when_type,
     ),
 
     named_type: $ => seq($.type_path, optional($.type_arguments)),
-    captured_type: $ => seq(
+    captured_type: $ => prec.right(seq(
       '$', field('name', $.type_identifier),
       optional(seq(':', field('constraint', $.type))),
-    ),
+    )),
     type_path: $ => prec.left(seq($.type_identifier, repeat(seq('.', $.type_identifier)))),
     type_arguments: $ => seq('(', commaSep1($.type), optional(','), ')'),
 
@@ -623,31 +609,35 @@ module.exports = grammar({
       'struct',
       repeat($.attribute),
       '{',
-      optional(seq(commaSep1($.struct_field), optional(','))),
+      repeat(choice(
+        seq($.struct_field, optional(',')),
+        $.function_definition,
+      )),
       '}',
     ),
 
     struct_field: $ => choice(
       seq(field('name', $.identifier), ':', field('type', $.type)),
       $.union_type,
+      seq('...', field('fields', $.expression)),
     ),
 
     enum_type: $ => seq(
-      'enum', '{', optional(seq(commaSep1($.enum_member), optional(','))), '}',
+      'enum', '{', repeat(choice(seq($.enum_member, optional(',')), $.function_definition)), '}',
     ),
     enum_member: $ => seq(field('name', $.identifier), optional(seq('=', field('value', $.integer_literal)))),
 
     flags_type: $ => seq(
       alias('flags', $.type_keyword),
       '(', field('underlying', $.named_type), ')',
-      '{', optional(seq(commaSep1($.flags_member), optional(','))), '}',
+      '{', repeat(choice(seq($.flags_member, optional(',')), $.function_definition)), '}',
     ),
     flags_member: $ => seq(field('name', $.identifier), optional(seq('=', field('value', $.expression)))),
 
     union_type: $ => seq(
       'union',
       optional(seq('(', field('tag', choice($.type, $.auto_attribute)), ')')),
-      '{', optional(seq(commaSep1(choice($.union_field, $.union_variant)), optional(','))), '}',
+      '{', repeat(choice(seq(choice($.union_field, $.union_variant), optional(',')), $.function_definition)), '}',
     ),
     auto_attribute: $ => seq('@', alias('auto', $.attribute_name)),
     union_field: $ => seq(field('name', $.identifier), ':', field('type', $.type)),
@@ -677,6 +667,11 @@ module.exports = grammar({
     trait_parameter: $ => seq(field('name', $.identifier), ':', field('type', $.type)),
 
     opaque_type: _ => 'opaque',
+    metatype: $ => prec.right(seq('type', optional(seq('(', field('constraint', $.type), ')')))),
+    distinct_type: $ => prec.right(seq(
+      'distinct', '(', field('base', $.type), ')',
+      optional(seq('{', repeat($.function_definition), '}')),
+    )),
     representation_type: $ => seq(alias('repr', $.builtin_name), '(', $.type, ')'),
 
     literal: $ => choice(

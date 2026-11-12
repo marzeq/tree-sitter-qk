@@ -4,6 +4,10 @@
     "named": true,
     "subtypes": [
       {
+        "type": "array_type",
+        "named": true
+      },
+      {
         "type": "binary_expression",
         "named": true
       },
@@ -32,11 +36,27 @@
         "named": true
       },
       {
+        "type": "distinct_type",
+        "named": true
+      },
+      {
         "type": "enum_literal",
         "named": true
       },
       {
+        "type": "enum_type",
+        "named": true
+      },
+      {
         "type": "field_expression",
+        "named": true
+      },
+      {
+        "type": "flags_type",
+        "named": true
+      },
+      {
+        "type": "function_type",
         "named": true
       },
       {
@@ -68,11 +88,23 @@
         "named": true
       },
       {
+        "type": "metatype",
+        "named": true
+      },
+      {
         "type": "no_initializer",
         "named": true
       },
       {
+        "type": "opaque_type",
+        "named": true
+      },
+      {
         "type": "parenthesized_expression",
+        "named": true
+      },
+      {
+        "type": "pointer_type",
         "named": true
       },
       {
@@ -88,11 +120,27 @@
         "named": true
       },
       {
+        "type": "slice_type",
+        "named": true
+      },
+      {
         "type": "struct_literal",
         "named": true
       },
       {
+        "type": "struct_type",
+        "named": true
+      },
+      {
+        "type": "trait_type",
+        "named": true
+      },
+      {
         "type": "unary_expression",
+        "named": true
+      },
+      {
+        "type": "union_type",
         "named": true
       },
       {
@@ -160,10 +208,6 @@
       {
         "type": "return_statement",
         "named": true
-      },
-      {
-        "type": "type_definition",
-        "named": true
       }
     ]
   },
@@ -180,6 +224,10 @@
         "named": true
       },
       {
+        "type": "distinct_type",
+        "named": true
+      },
+      {
         "type": "dynamic_trait_type",
         "named": true
       },
@@ -193,6 +241,10 @@
       },
       {
         "type": "function_type",
+        "named": true
+      },
+      {
+        "type": "metatype",
         "named": true
       },
       {
@@ -601,16 +653,6 @@
           }
         ]
       },
-      "compile_time": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "$",
-            "named": false
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
@@ -970,6 +1012,32 @@
     }
   },
   {
+    "type": "distinct_type",
+    "named": true,
+    "fields": {
+      "base": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "function_definition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dynamic_trait_type",
     "named": true,
     "fields": {},
@@ -1036,6 +1104,10 @@
       "types": [
         {
           "type": "enum_member",
+          "named": true
+        },
+        {
+          "type": "function_definition",
           "named": true
         }
       ]
@@ -1181,6 +1253,10 @@
       "types": [
         {
           "type": "flags_member",
+          "named": true
+        },
+        {
+          "type": "function_definition",
           "named": true
         },
         {
@@ -1422,10 +1498,6 @@
           {
             "type": ")",
             "named": false
-          },
-          {
-            "type": "identifier",
-            "named": true
           },
           {
             "type": "type",
@@ -1997,6 +2069,22 @@
     }
   },
   {
+    "type": "metatype",
+    "named": true,
+    "fields": {
+      "constraint": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "module_declaration",
     "named": true,
     "fields": {
@@ -2500,10 +2588,6 @@
         {
           "type": "multi_binding_declaration",
           "named": true
-        },
-        {
-          "type": "type_definition",
-          "named": true
         }
       ]
     }
@@ -2531,6 +2615,16 @@
     "type": "struct_field",
     "named": true,
     "fields": {
+      "fields": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": false,
@@ -2611,6 +2705,10 @@
       "types": [
         {
           "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "function_definition",
           "named": true
         },
         {
@@ -2741,42 +2839,6 @@
     }
   },
   {
-    "type": "type_definition",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "type_identifier",
-            "named": true
-          }
-        ]
-      },
-      "type_parameters": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "type_parameter_list",
-            "named": true
-          }
-        ]
-      },
-      "value": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "type",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "type_identifier",
     "named": true,
     "fields": {},
@@ -2795,16 +2857,6 @@
     "type": "type_parameter",
     "named": true,
     "fields": {
-      "constraint": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "type",
-            "named": true
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
@@ -2814,22 +2866,17 @@
             "named": true
           }
         ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
       }
-    }
-  },
-  {
-    "type": "type_parameter_list",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "type_parameter",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -2930,6 +2977,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "function_definition",
+          "named": true
+        },
         {
           "type": "union_field",
           "named": true
@@ -3275,10 +3326,6 @@
     "named": false
   },
   {
-    "type": "alias",
-    "named": false
-  },
-  {
     "type": "as",
     "named": false
   },
@@ -3309,6 +3356,10 @@
   },
   {
     "type": "defer",
+    "named": false
+  },
+  {
+    "type": "distinct",
     "named": false
   },
   {
