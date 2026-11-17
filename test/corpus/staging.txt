@@ -104,7 +104,7 @@ let words: $if core.build.pointer_bits == 64 { u64 } else { u32 } = 0
 let value = $if true { 1 } else { 2 }
 let choose(): i32 {
   $if true { return value } else { return 0 }
-  $compiler_assert(value == 1, "selected value")
+  $assert(value == 1, "selected value")
 }
 
 ---
@@ -215,7 +215,7 @@ let choose(): i32 {
           (return_statement
             (literal
               (integer_literal)))))
-      (compiler_assert_directive
+      (assert_directive
         (builtin_name)
         (binary_expression
           (identifier)

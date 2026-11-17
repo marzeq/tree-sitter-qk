@@ -56,7 +56,7 @@ module.exports = grammar({
       $.multi_binding_declaration,
       $.compile_time_when,
       $.compiler_error_directive,
-      $.compiler_assert_directive,
+      $.assert_directive,
       $.attribute,
       ';',
     ),
@@ -194,7 +194,7 @@ module.exports = grammar({
       $.for_statement,
       $.compile_time_when,
       $.compiler_error_directive,
-      $.compiler_assert_directive,
+      $.assert_directive,
       $.attribute,
       $.expression_statement,
     ),
@@ -334,9 +334,9 @@ module.exports = grammar({
       optional('$'), alias('compiler_error', $.builtin_name), '(', $.string_literal, ')',
     ),
 
-    compiler_assert_directive: $ => seq(
-      optional('$'), alias('compiler_assert', $.builtin_name),
-      '(', field('condition', $.expression), ',', field('message', $.string_literal), ')',
+    assert_directive: $ => seq(
+      '$', alias('assert', $.builtin_name),
+      '(', field('condition', $.expression), optional(seq(',', field('message', $.string_literal))), ')',
     ),
 
     attribute: $ => choice($.link_attribute, $.ordinary_attribute),

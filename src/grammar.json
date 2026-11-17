@@ -43,7 +43,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "compiler_assert_directive"
+          "name": "assert_directive"
         },
         {
           "type": "SYMBOL",
@@ -990,7 +990,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "compiler_assert_directive"
+          "name": "assert_directive"
         },
         {
           "type": "SYMBOL",
@@ -2252,26 +2252,18 @@
         }
       ]
     },
-    "compiler_assert_directive": {
+    "assert_directive": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "$"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "STRING",
+          "value": "$"
         },
         {
           "type": "ALIAS",
           "content": {
             "type": "STRING",
-            "value": "compiler_assert"
+            "value": "assert"
           },
           "named": true,
           "value": "builtin_name"
@@ -2289,16 +2281,29 @@
           }
         },
         {
-          "type": "STRING",
-          "value": ","
-        },
-        {
-          "type": "FIELD",
-          "name": "message",
-          "content": {
-            "type": "SYMBOL",
-            "name": "string_literal"
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
+                  "type": "FIELD",
+                  "name": "message",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "string_literal"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
